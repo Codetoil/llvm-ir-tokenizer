@@ -227,4 +227,5 @@ llvm-code-tokenizer.json
 qwen-llvm-merged-tokenizer
 llvm-checkpoints
 llvm-model-export
+llvm-model-export_gguf
 unsloth_compiled_cache
