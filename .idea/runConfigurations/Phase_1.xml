@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="llvm_ir_tokenizer.merge_qwen" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+  <configuration default="false" name="Phase 1" type="PythonConfigurationType" factoryName="Python">
     <module name="llvm-ir-tokenizer" />
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
@@ -16,7 +16,7 @@
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="RUN_TOOL" value="true" />
     <option name="RUN_AS_SCRIPT" value="false" />
-    <option name="SCRIPT_NAME" value="llvm_ir_tokenizer.merge_qwen" />
+    <option name="SCRIPT_NAME" value="llvm_ir_tokenizer.phase_1_preprocess_corpus" />
     <option name="PARAMETERS" value="" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />

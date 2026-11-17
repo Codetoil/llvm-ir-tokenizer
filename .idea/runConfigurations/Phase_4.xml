@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="llvm_ir_tokenizer.preprocess_corpus" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+  <configuration default="false" name="Phase 4" type="PythonConfigurationType" factoryName="Python">
     <module name="llvm-ir-tokenizer" />
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
@@ -16,7 +16,7 @@
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="RUN_TOOL" value="true" />
     <option name="RUN_AS_SCRIPT" value="false" />
-    <option name="SCRIPT_NAME" value="llvm_ir_tokenizer.preprocess_corpus" />
+    <option name="SCRIPT_NAME" value="llvm_ir_tokenizer.phase_4_global_vocabulary" />
     <option name="PARAMETERS" value="" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
