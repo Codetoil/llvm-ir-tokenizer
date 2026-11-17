@@ -19,15 +19,13 @@ dependencies = [
 ]
 
 [project.scripts]
-compute-hash = "llvm_ir_tokenizer.compute_hash:main"
-export-gguf = "llvm_ir_tokenizer.export_gguf:main"
-find-duplicates = "llvm_ir_tokenizer.find_duplicates:main"
-fix-vocab = "llvm_ir_tokenizer.fix_vocab:main"
-merge-qwen = "llvm_ir_tokenizer.merge_qwen:main"
-patch-tok = "llvm_ir_tokenizer.patch_tok:main"
-preprocess-corpus = "llvm_ir_tokenizer.preprocess_corpus:main"
-train-llm = "llvm_ir_tokenizer.train_llm:main"
-train-tokenizer = "llvm_ir_tokenizer.train_tokenizer:main"
+phase-1 = "llvm_ir_tokenizer.phase_1_preprocess_corpus:main"
+phase-2 = "llvm_ir_tokenizer.phase_2_serializers:main"
+phase-3 = "llvm_ir_tokenizer.phase_3_train_tokenizers:main"
+phase-4 = "llvm_ir_tokenizer.phase_4_global_vocabulary:main"
+phase-5 = "llvm_ir_tokenizer.phase_5_train_llm:main"
+phase-6 = "llvm_ir_tokenizer.phase_6_export_and_interface:main"
+phase-7 = "llvm_ir_tokenizer.phase_7_validation:main"
 
 [build-system]
 requires = ["uv_build>=0.13.5,<0.14.0"]
