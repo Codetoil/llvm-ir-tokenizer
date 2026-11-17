@@ -21,44 +21,25 @@ class LLVMPreProcess:
     def preprocess(self, text: str) -> Tuple[List[Tuple[str, Tuple[int, int]]], Dict, Dict, Dict, Dict]:
         raw = list(self.lexer.get_tokens_unprocessed(text))
 
-        # Forward and reverse maps for locals and labels
         local_to_id, id_to_local = {}, {}
         label_to_id, id_to_label = {}, {}
-
-        # Reverse maps for comments and globals
         comment_to_id, id_to_comment = {}, {}
         global_to_id, id_to_global = {}, {}
 
-        # Pass 1: Build maps by definition order
-        for _, ttype, value in raw:
-            if ttype in PToken.Comment:
-                continue
-
-            if LOCAL_RE.match(value) and value not in local_to_id:
-                local_idx = len(local_to_id)
-                local_to_id[value] = f"%{local_idx}"
-                id_to_local[str(local_idx)] = value
-
-            elif LABEL_RE.match(value) and value not in label_to_id:
-                label_idx = len(label_to_id)
-                label_to_id[value] = f"bb{label_idx}:"
-                id_to_label[str(label_idx)] = value
-
-        # Pass 2: Generate the output tokens and spans
         out = []
         for idx, ttype, value in raw:
             span = (idx, idx + len(value))
             if not value:
                 continue
 
-            # 1. Handle Text (Whitespace) FIRST to prevent dropping newlines
+            # 1. Handle Text (Whitespace)
             if ttype in PToken.Text:
                 for i, c in enumerate(value):
                     if c == "\n":
                         out.append(("\n", (idx + i, idx + i + 1)))
                 continue
 
-            # 2. Extract trailing newline for all other token types
+            # 2. Extract trailing newline
             has_newline = value.endswith("\n")
             if has_newline:
                 value = value[:-1]
@@ -67,7 +48,7 @@ class LLVMPreProcess:
                     out.append(("\n", (span[1], span[1] + 1)))
                     continue
 
-            # 3. Comments -> [COMMENT] <id>
+            # 3. Comments -> Stream definition + [COMMENT] <id>
             if ttype in PToken.Comment:
                 stripped = value.strip()
                 if not stripped.startswith(INLINE_COMMENT_PREFIXES):
@@ -75,6 +56,9 @@ class LLVMPreProcess:
                         c_id = len(comment_to_id)
                         comment_to_id[stripped] = c_id
                         id_to_comment[str(c_id)] = stripped
+                        # Inline symbol definition on first use
+                        clean_stripped = stripped.replace("\n", " ")
+                        out.append((f"<|symbol|> {clean_stripped} <|comment|> {c_id} <|end_symbol|>", span))
 
                     out.append(("[COMMENT]", (idx, idx + 1)))
                     out.append((str(comment_to_id[stripped]), span))
@@ -85,22 +69,32 @@ class LLVMPreProcess:
                         out.append((word, (idx + p, idx + p + len(word))))
                         cursor = p + len(word)
 
-            # 4. Locals -> %0, %1, ...
+            # 4. Locals -> Stream definition + %0
             elif LOCAL_RE.match(value):
+                if value not in local_to_id:
+                    local_idx = len(local_to_id)
+                    local_to_id[value] = f"%{local_idx}"
+                    id_to_local[str(local_idx)] = value
+                    out.append((f"<|symbol|> {value.lstrip('%')} <|local|> {local_idx} <|end_symbol|>", span))
                 out.append((local_to_id[value], span))
 
-            # 5. Labels -> [L] bb0:
+            # 5. Labels -> Stream definition + [L] bb0:
             elif LABEL_RE.match(value):
+                if value not in label_to_id:
+                    label_idx = len(label_to_id)
+                    label_to_id[value] = f"bb{label_idx}:"
+                    id_to_label[str(label_idx)] = value
+                    out.append((f"<|symbol|> {value.rstrip(':')} <|label|> {label_idx} <|end_symbol|>", span))
                 out.append(("[L]", (idx, idx + 1)))
                 out.append((label_to_id[value], span))
 
-            # 6. Globals -> [G] <id>
+            # 6. Globals -> Stream definition + [G] <id>
             elif GLOBAL_RE.match(value):
                 if value not in global_to_id:
                     g_id = len(global_to_id)
                     global_to_id[value] = g_id
                     id_to_global[str(g_id)] = value
-
+                    out.append((f"<|symbol|> {value.lstrip('@')} <|global|> {g_id} <|end_symbol|>", span))
                 out.append(("[G]", (idx, idx + 1)))
                 out.append((str(global_to_id[value]), span))
 
@@ -113,7 +107,6 @@ class LLVMPreProcess:
             else:
                 out.append((value, span))
 
-            # Re-append the newline we extracted in step 2
             if has_newline:
                 out.append(("\n", (span[1], span[1] + 1)))
 
@@ -126,17 +119,20 @@ def process_file(file_path: Path, input_dir: Path, output_dir: Path):
 
     atoms, comments, globals_, locals_, labels_ = preprocessor.preprocess(text)
 
-    # Join atoms with spaces, then use regex to clean up spaces around newlines
-    processed_text = " ".join(atom for atom, _ in atoms)
-    processed_text = re.sub(r' *\n *', '\n', processed_text)
+    # 1. Join atoms into the code text
+    code_text = " ".join(atom for atom, _ in atoms)
+    code_text = re.sub(r' *\n *', '\n', code_text)
+
+    # 2. Wrap the entire block in the code channel
+    # (The <|think|> block can be added later by your Teacher model)
+    final_text = f"<|code|>\n{code_text}\n<|end_code|>"
 
     relative_path = file_path.relative_to(input_dir)
     out_path = output_dir / relative_path
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(final_text, encoding="utf-8")
 
-    out_path.write_text(processed_text, encoding="utf-8")
-
-    # Write the complete side-channel mapping
+    # 3. Write the side-channel JSON (optional, for evaluation)
     json_path = out_path.with_suffix(".ll.json")
     mapping = {
         "comments": comments,
