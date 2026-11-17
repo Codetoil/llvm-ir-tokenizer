@@ -17,11 +17,11 @@ compute-hash = "llvm_ir_tokenizer.compute_hash:main"
 export-gguf = "llvm_ir_tokenizer.export_gguf:main"
 find-duplicates = "llvm_ir_tokenizer.find_duplicates:main"
 fix-vocab = "llvm_ir_tokenizer.fix_vocab:main"
-merge-qwen = "llvm_ir_tokenizer.merge-qwen:main"
-patch-tok = "llvm_ir_tokenizer.patch-tok:main"
-preprocess-corpus = "llvm_ir_tokenizer.preprocess-corpus:main"
-train-llm = "llvm_ir_tokenizer.train-llm:main"
-train-tokenizer = "llvm_ir_tokenizer.train-tokenizer:main"
+merge-qwen = "llvm_ir_tokenizer.merge_qwen:main"
+patch-tok = "llvm_ir_tokenizer.patch_tok:main"
+preprocess-corpus = "llvm_ir_tokenizer.preprocess_corpus:main"
+train-llm = "llvm_ir_tokenizer.train_llm:main"
+train-tokenizer = "llvm_ir_tokenizer.train_tokenizer:main"
 
 [build-system]
 requires = ["uv_build>=0.13.5,<0.14.0"]
