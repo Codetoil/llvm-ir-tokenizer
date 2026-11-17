@@ -1,9 +1,8 @@
 import re
 from pathlib import Path
-from tokenizers import Tokenizer, pre_tokenizers, Regex, AddedToken
+from tokenizers import Tokenizer, pre_tokenizers, Regex
 from tokenizers.models import BPE
 from tokenizers.trainers import BpeTrainer
-from transformers import AutoTokenizer
 
 
 def code_only_iterator(directory):
