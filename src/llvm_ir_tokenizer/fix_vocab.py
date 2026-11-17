@@ -2,7 +2,7 @@ import json
 import os
 
 def main():
-    path = os.path.expanduser("llvm-checkpoints/final-adapter/tokenizer.json")
+    path = "llvm-checkpoints/final-adapter/tokenizer.json"
 
     with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)

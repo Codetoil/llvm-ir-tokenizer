@@ -1,11 +1,8 @@
 from unsloth import FastLanguageModel
-import os
 
 import torch
 
 def main():
-    # 1. Define absolute paths
-    home = os.path.expanduser("~")
     adapter_path = "llvm-checkpoints/final-adapter"
     export_path = "llvm-model-export"
 
