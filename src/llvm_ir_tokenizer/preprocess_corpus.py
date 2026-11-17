@@ -142,8 +142,7 @@ def process_file(file_path: Path, input_dir: Path, output_dir: Path):
     }
     json_path.write_text(json.dumps(mapping, indent=2), encoding="utf-8")
 
-
-if __name__ == "__main__":
+def main():
     input_dir = Path("llvm-project")
     output_dir = Path("llvm-processed")
 
@@ -152,3 +151,6 @@ if __name__ == "__main__":
     for file_path in input_dir.rglob("*.ll"):
         process_file(file_path, input_dir, output_dir)
         print(f"Processed {file_path}")
+
+if __name__ == "__main__":
+    main()
