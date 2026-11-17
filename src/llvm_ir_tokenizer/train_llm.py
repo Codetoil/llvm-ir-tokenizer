@@ -1,3 +1,5 @@
+import os
+
 from unsloth import FastLanguageModel
 import torch
 from datasets import load_dataset
@@ -10,7 +12,7 @@ def main():
     max_seq_length = 2048 # 2048 is safe for 12GB VRAM. Increase to 4096 if you don't OOM.
     dtype = torch.float16
     load_in_4bit = True
-    output_dir = str(Path.home() / "cluster1-storage" / "llvm-checkpoints")
+    output_dir = "llvm-checkpoints"
 
     # 2. Load Base Model in 4-bit
     print("Loading base Qwen2.5-Coder-7B model...")
@@ -28,7 +30,7 @@ def main():
     # Ensure the tokenizer has a padding token and knows which side to pad on
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-    tokenizer.padding_size = "right"
+    tokenizer.padding_side = "right"
 
     torch.cuda.empty_cache()
     print(f"Resizing embeddings to match tokenizer vocab size: {len(tokenizer)}")
@@ -65,7 +67,7 @@ def main():
             per_device_train_batch_size = 2,   # Keep at 2 for 12GB VRAM
             gradient_accumulation_steps = 4,   # Effective batch size = 8
             warmup_steps = 5,
-    #        max_steps = 200,                   # Adjust based on how many files you have
+            max_steps = 200,                   # Adjust based on how many files you have
             learning_rate = 2e-4,
             fp16 = True,
             bf16 = False,

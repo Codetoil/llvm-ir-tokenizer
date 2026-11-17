@@ -6,8 +6,8 @@ import torch
 def main():
     # 1. Define absolute paths
     home = os.path.expanduser("~")
-    adapter_path = os.path.join(home, "cluster1-storage", "llvm-checkpoints", "final-adapter")
-    export_path = os.path.join(home, "cluster1-storage", "llvm-model-export")
+    adapter_path = "llvm-checkpoints/final-adapter"
+    export_path = "llvm-model-export"
 
     print("Loading fine-tuned model directly from adapter folder...")
 

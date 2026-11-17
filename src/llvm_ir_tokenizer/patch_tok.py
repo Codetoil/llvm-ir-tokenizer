@@ -2,8 +2,7 @@ import json
 import os
 
 def main():
-    # Use the absolute path to avoid the tilde error
-    path = "/home/codetoil/cluster1-storage/llvm-checkpoints/final-adapter/tokenizer.json"
+    path = "llvm-checkpoints/final-adapter/tokenizer.json"
 
     if os.path.exists(path):
         with open(path, "r") as f:

@@ -6,7 +6,7 @@ from transformers import AutoTokenizer
 def main():
     # Paths
     base_py_path = os.path.expanduser("~/.unsloth/llama.cpp/conversion/base.py")
-    adapter_path = os.path.expanduser("~/cluster1-storage/llvm-checkpoints/final-adapter")
+    adapter_path = os.getcwd() + "llvm-checkpoints/final-adapter"
 
     # 1. Extract the exact `chktxt` string from base.py
     chktxt = None

@@ -225,4 +225,6 @@ __marimo__/
 llvm-processed
 llvm-code-tokenizer.json
 qwen-llvm-merged-tokenizer
-unsloth_compiled_cache/
+llvm-checkpoints
+llvm-model-export
+unsloth_compiled_cache
